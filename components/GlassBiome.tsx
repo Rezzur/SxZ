@@ -137,11 +137,11 @@ export default function ExecutiveDashboard() {
     if (w.type === 'metric') {
       return (
         <div className="flex flex-col justify-center h-full">
-          <div className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-amber-200 to-amber-600 tracking-tighter">
+          <div className="text-2xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-amber-200 to-amber-600 tracking-tighter">
             {w.data?.value}
           </div>
           {w.data?.trend && (
-            <div className="text-xs font-bold uppercase tracking-widest mt-2 text-emerald-500">
+            <div className="text-[8px] md:text-xs font-bold uppercase tracking-widest mt-1 md:mt-2 text-emerald-500">
               {w.data.trend}
             </div>
           )}
@@ -150,21 +150,21 @@ export default function ExecutiveDashboard() {
     }
     if (w.type === 'status') {
       return (
-        <div className="flex items-center gap-4 h-full">
-          <div className="w-16 h-16 rounded-full border border-amber-500/30 flex items-center justify-center relative">
-             <div className="w-12 h-12 rounded-full border border-amber-500/50 border-t-amber-500 animate-spin" />
+        <div className="flex items-center gap-2 md:gap-4 h-full">
+          <div className="w-10 h-10 md:w-16 md:h-16 rounded-full border border-amber-500/30 flex items-center justify-center relative">
+             <div className="w-8 h-8 md:w-12 md:h-12 rounded-full border border-amber-500/50 border-t-amber-500 animate-spin" />
              <Activity size={20} className="absolute text-amber-500" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-zinc-200">{w.data?.value}</div>
-            <div className="text-[10px] text-amber-500/70 tracking-widest uppercase">{w.data?.trend}</div>
+            <div className="text-lg md:text-2xl font-bold text-zinc-200">{w.data?.value}</div>
+            <div className="text-[8px] md:text-[10px] text-amber-500/70 tracking-widest uppercase">{w.data?.trend}</div>
           </div>
         </div>
       );
     }
     if (w.type === 'chart') {
       return (
-        <div className="flex items-end gap-2 h-full w-full pt-4">
+        <div className="flex items-end gap-1 md:gap-2 h-full w-full pt-2 md:pt-4">
           {[40, 70, 45, 90, 65, 80].map((h, i) => (
             <div key={i} className="flex-grow bg-gradient-to-t from-amber-600/10 to-amber-500/80 rounded-t-sm" style={{ height: `${h}%` }} />
           ))}
@@ -174,20 +174,20 @@ export default function ExecutiveDashboard() {
   };
 
   return (
-    <div className="h-screen w-full bg-[#020202] text-zinc-500 font-mono p-4 flex flex-col select-none overflow-hidden">
+    <div className="h-screen w-full bg-[#020202] text-zinc-500 font-mono p-2 md:p-4 flex flex-col select-none overflow-hidden">
       
       {/* EXECUTIVE HEADER */}
-      <div className="flex justify-between items-center mb-6 border-b border-zinc-900 pb-4 px-2">
-        <div className="flex items-center gap-4">
-          <div className="w-8 h-8 border border-amber-500/30 bg-amber-500/10 flex items-center justify-center rounded">
+      <div className="flex justify-between items-center mb-3 md:mb-6 border-b border-zinc-900 pb-2 md:pb-4 px-1 md:px-2">
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="w-6 h-6 md:w-8 md:h-8 border border-amber-500/30 bg-amber-500/10 flex items-center justify-center rounded">
             <DollarSign size={16} className="text-amber-500" />
           </div>
           <div className="flex flex-col">
-            <span className="text-zinc-100 font-bold tracking-[0.2em] text-sm">EXECUTIVE_BOARD</span>
-            <span className="text-amber-500/70 text-[9px] uppercase tracking-widest">Financial Overview Q3</span>
+            <span className="text-zinc-100 font-bold tracking-[0.2em] text-xs md:text-sm">EXECUTIVE_BOARD</span>
+            <span className="text-amber-500/70 text-[8px] md:text-[9px] uppercase tracking-widest">Financial Overview Q3</span>
           </div>
         </div>
-        <div className="flex gap-6 text-[10px] uppercase tracking-wider text-zinc-600">
+        <div className="flex gap-3 md:gap-6 text-[8px] md:text-[10px] uppercase tracking-wider text-zinc-600">
             <span>Market: <span className="text-emerald-500">BULLISH</span></span>
             <span>Grid: 6x6 LOCKED</span>
         </div>
@@ -196,11 +196,11 @@ export default function ExecutiveDashboard() {
       {/* MAIN CONTAINER */}
       <div 
         ref={containerRef}
-        className="flex-grow grid grid-cols-6 grid-rows-6 gap-3 relative"
+        className="flex-grow grid grid-cols-6 grid-rows-6 gap-2 md:gap-3 relative"
         style={{ gridTemplateColumns: 'repeat(6, 1fr)', gridTemplateRows: 'repeat(6, 1fr)' }}
       >
         {/* BACKGROUND DOTS (Gold tinted) */}
-        <div className="absolute inset-0 grid grid-cols-6 grid-rows-6 gap-3 pointer-events-none opacity-20">
+        <div className="absolute inset-0 grid grid-cols-6 grid-rows-6 gap-2 md:gap-3 pointer-events-none opacity-20">
           {Array.from({ length: 36 }).map((_, i) => (
             <div key={i} className="border border-amber-900/20 rounded-lg bg-[#050505]" />
           ))}
@@ -215,11 +215,11 @@ export default function ExecutiveDashboard() {
               gridColumn: `${w.x} / span ${w.w}`,
               gridRow: `${w.y} / span ${w.h}`,
             }}
-            className="group relative bg-[#080808] border border-zinc-800 rounded-xl p-5 flex flex-col cursor-grab active:cursor-grabbing hover:border-amber-500/40 transition-all shadow-2xl"
+            className="group relative bg-[#080808] border border-zinc-800 rounded-lg md:rounded-xl p-3 md:p-5 flex flex-col cursor-grab active:cursor-grabbing hover:border-amber-500/40 transition-all shadow-2xl"
           >
             {/* WIDGET HEADER */}
-            <div className="flex justify-between items-start mb-4 text-[10px] font-bold tracking-widest text-zinc-600">
-              <div className="flex items-center gap-2 group-hover:text-amber-500 transition-colors">
+            <div className="flex justify-between items-start mb-2 md:mb-4 text-[8px] md:text-[10px] font-bold tracking-widest text-zinc-600">
+              <div className="flex items-center gap-1 md:gap-2 group-hover:text-amber-500 transition-colors">
                 {w.icon}
                 <span>{w.title}</span>
               </div>
@@ -232,15 +232,15 @@ export default function ExecutiveDashboard() {
             </div>
 
             {/* --- 8 РУЧЕК РЕСАЙЗА (Золотые) --- */}
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'n', e)} className="top-0 left-1/4 right-1/4 h-1.5 cursor-ns-resize" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 's', e)} className="bottom-0 left-1/4 right-1/4 h-1.5 cursor-ns-resize" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'e', e)} className="right-0 top-1/4 bottom-1/4 w-1.5 cursor-ew-resize" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'w', e)} className="left-0 top-1/4 bottom-1/4 w-1.5 cursor-ew-resize" />
+            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'n', e)} className="top-0 left-1/4 right-1/4 h-1 md:h-1.5 cursor-ns-resize" />
+            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 's', e)} className="bottom-0 left-1/4 right-1/4 h-1 md:h-1.5 cursor-ns-resize" />
+            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'e', e)} className="right-0 top-1/4 bottom-1/4 w-1 md:w-1.5 cursor-ew-resize" />
+            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'w', e)} className="left-0 top-1/4 bottom-1/4 w-1 md:w-1.5 cursor-ew-resize" />
 
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'nw', e)} className="top-0 left-0 w-3 h-3 cursor-nwse-resize rounded-tl-xl" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'ne', e)} className="top-0 right-0 w-3 h-3 cursor-nesw-resize rounded-tr-xl" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'sw', e)} className="bottom-0 left-0 w-3 h-3 cursor-nesw-resize rounded-bl-xl" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'se', e)} className="bottom-0 right-0 w-3 h-3 cursor-nwse-resize rounded-br-xl" />
+            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'nw', e)} className="top-0 left-0 w-2 h-2 md:w-3 md:h-3 cursor-nwse-resize rounded-tl-xl" />
+            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'ne', e)} className="top-0 right-0 w-2 h-2 md:w-3 md:h-3 cursor-nesw-resize rounded-tr-xl" />
+            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'sw', e)} className="bottom-0 left-0 w-2 h-2 md:w-3 md:h-3 cursor-nesw-resize rounded-bl-xl" />
+            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'se', e)} className="bottom-0 right-0 w-2 h-2 md:w-3 md:h-3 cursor-nwse-resize rounded-br-xl" />
 
           </div>
         ))}

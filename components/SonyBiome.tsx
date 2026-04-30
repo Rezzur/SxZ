@@ -45,28 +45,28 @@ export default function SonyBiome() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <div className="h-full w-full bg-white text-black flex items-center justify-center p-6 md:p-20 overflow-hidden relative">
+    <div className="h-full w-full bg-white text-black flex items-center justify-center p-4 md:p-20 overflow-hidden relative">
       
       {/* ФОНОВЫЙ ЛОГОТИП */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] font-black text-zinc-100 select-none pointer-events-none z-0">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[40vw] md:text-[25vw] font-black text-zinc-100 select-none pointer-events-none z-0">
         SONY
       </div>
 
-      <div className="max-w-[1400px] w-full flex flex-col md:flex-row items-center justify-between gap-10 z-10">
+      <div className="max-w-[1400px] w-full flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10 z-10">
         
         {/* ЛЕВАЯ КОЛОНКА */}
-        <div className="w-full md:w-[45%] space-y-12">
-          <div className="space-y-6">
+        <div className="w-full md:w-[45%] space-y-6 md:space-y-12">
+          <div className="space-y-4 md:space-y-6">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-3"
             >
-              <span className="h-[1px] w-8 bg-blue-600"></span>
-              <span className="text-sm font-bold tracking-[0.3em] text-blue-600 uppercase">New Era of Silence</span>
+              <span className="h-[1px] w-6 md:w-8 bg-blue-600"></span>
+              <span className="text-xs md:text-sm font-bold tracking-[0.3em] text-blue-600 uppercase">New Era of Silence</span>
             </motion.div>
 
-            <h1 className="text-7xl md:text-[120px] font-black tracking-tighter leading-[0.8]">
+            <h1 className="text-4xl md:text-7xl lg:text-[120px] font-black tracking-tighter leading-[0.8]">
               WH-1000<br/>
               {/* Анимированные буквы XM6 */}
               <motion.span 
@@ -77,7 +77,7 @@ export default function SonyBiome() {
               </motion.span>
             </h1>
 
-            <div className="min-h-[160px] flex flex-col justify-end">
+            <div className="min-h-[100px] md:min-h-[160px] flex flex-col justify-end">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeIndex}
@@ -85,29 +85,29 @@ export default function SonyBiome() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.4 }}
-                  className="space-y-3"
+                  className="space-y-2 md:space-y-3"
                 >
-                  <p className="text-2xl font-medium text-zinc-900">{colors[activeIndex].tagline}</p>
-                  <p className="text-lg text-zinc-500 font-light max-w-sm leading-relaxed">
+                  <p className="text-lg md:text-2xl font-medium text-zinc-900">{colors[activeIndex].tagline}</p>
+                  <p className="text-sm md:text-lg text-zinc-500 font-light max-w-sm leading-relaxed">
                     Адаптивное шумоподавление на базе AI и 70 часов автономной работы. 
                     Будущее звука уже здесь.
                   </p>
-                  <p className="text-5xl font-light text-zinc-900 pt-4">{colors[activeIndex].price}</p>
+                  <p className="text-3xl md:text-5xl font-light text-zinc-900 pt-2 md:pt-4">{colors[activeIndex].price}</p>
                 </motion.div>
               </AnimatePresence>
             </div>
           </div>
 
           {/* ВЫБОР ЦВЕТА */}
-          <div className="bg-white/50 backdrop-blur-md p-6 rounded-[40px] border border-zinc-100 shadow-xl shadow-zinc-200/50 inline-block">
-            <div className="flex gap-4">
+          <div className="bg-white/50 backdrop-blur-md p-4 md:p-6 rounded-[30px] md:rounded-[40px] border border-zinc-100 shadow-xl shadow-zinc-200/50 inline-block">
+            <div className="flex gap-3 md:gap-4">
               {colors.map((color, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveIndex(index)}
                   className={`
-                    group relative w-14 h-14 rounded-full transition-all duration-500
-                    ${activeIndex === index ? "scale-110 ring-2 ring-offset-4 ring-zinc-300" : "hover:scale-105"}
+                    group relative w-10 h-10 md:w-14 md:h-14 rounded-full transition-all duration-500
+                    ${activeIndex === index ? "scale-110 ring-2 ring-offset-2 md:ring-offset-4 ring-zinc-300" : "hover:scale-105"}
                   `}
                 >
                   <div 
@@ -119,8 +119,8 @@ export default function SonyBiome() {
             </div>
           </div>
 
-          <div className="flex items-center gap-8 pt-4">
-            <button className="bg-black text-white px-14 py-6 rounded-full font-bold text-lg hover:bg-blue-600 hover:shadow-[0_20px_40px_rgba(37,99,235,0.3)] transition-all active:scale-95">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8 pt-2 md:pt-4">
+            <button className="w-full md:w-auto bg-black text-white px-8 md:px-14 py-4 md:py-6 rounded-full font-bold text-base md:text-lg hover:bg-blue-600 hover:shadow-[0_20px_40px_rgba(37,99,235,0.3)] transition-all active:scale-95">
               Оформить заказ
             </button>
             <div className="flex flex-col">
@@ -131,7 +131,7 @@ export default function SonyBiome() {
         </div>
 
         {/* ПРАВАЯ КОЛОНКА */}
-        <div className="w-full md:w-[55%] relative flex items-center justify-center">
+        <div className="w-full md:w-[55%] relative flex items-center justify-center mt-4 md:mt-0">
           <div className="relative w-full aspect-square flex items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.img
@@ -139,7 +139,7 @@ export default function SonyBiome() {
                 src={colors[activeIndex].img}
                 alt={colors[activeIndex].name}
                 initial={{ opacity: 0, x: 100, scale: 0.8, rotate: 10 }}
-                animate={{ opacity: 1, x: 0, scale: 1.2, rotate: 0 }}
+                animate={{ opacity: 1, x: 0, scale: 1, rotate: 0 }}
                 exit={{ opacity: 0, x: -100, scale: 0.8, rotate: -10 }}
                 transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 className="w-full h-auto object-contain drop-shadow-[0_40px_80px_rgba(0,0,0,0.15)] select-none pointer-events-none"

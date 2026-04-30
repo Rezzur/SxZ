@@ -4,3 +4,9 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+
+@media (max-width: 768px) {
+  :root {
+    font-size: 14px;
+  }
+}
