@@ -5,6 +5,20 @@
   --foreground: #171717;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+button {
+  touch-action: manipulation;
+}
+
 @media (max-width: 768px) {
   :root {
     font-size: 14px;

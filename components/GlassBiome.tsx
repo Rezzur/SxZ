@@ -173,11 +173,54 @@ export default function ExecutiveDashboard() {
     }
   };
 
+  const renderWidgetPanel = (w: Widget, interactive = false) => (
+    <div
+      key={w.id}
+      onMouseDown={interactive ? (e) => startDragging(w.id, e) : undefined}
+      style={interactive ? { 
+        gridColumn: `${w.x} / span ${w.w}`,
+        gridRow: `${w.y} / span ${w.h}`,
+      } : undefined}
+      className={`group relative min-w-0 bg-[#080808] border border-zinc-800 rounded-lg md:rounded-xl p-3 md:p-5 flex flex-col hover:border-amber-500/40 transition-all shadow-2xl ${
+        interactive ? "cursor-grab active:cursor-grabbing" : ""
+      }`}
+    >
+      {/* WIDGET HEADER */}
+      <div className="flex justify-between items-start gap-2 mb-2 md:mb-4 text-[8px] md:text-[10px] font-bold tracking-widest text-zinc-600">
+        <div className="flex items-center gap-1 md:gap-2 min-w-0 group-hover:text-amber-500 transition-colors">
+          {w.icon}
+          <span className="truncate">{w.title}</span>
+        </div>
+        <span className="opacity-30 shrink-0">[{w.w}x{w.h}]</span>
+      </div>
+
+      {/* WIDGET CONTENT */}
+      <div className="flex-grow min-h-0">
+        {renderWidgetContent(w)}
+      </div>
+
+      {interactive && (
+        <>
+          {/* --- 8 РУЧЕК РЕСАЙЗА (Золотые) --- */}
+          <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'n', e)} className="top-0 left-1/4 right-1/4 h-1 md:h-1.5 cursor-ns-resize" />
+          <ResizeHandle onMouseDown={(e) => startResizing(w.id, 's', e)} className="bottom-0 left-1/4 right-1/4 h-1 md:h-1.5 cursor-ns-resize" />
+          <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'e', e)} className="right-0 top-1/4 bottom-1/4 w-1 md:w-1.5 cursor-ew-resize" />
+          <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'w', e)} className="left-0 top-1/4 bottom-1/4 w-1 md:w-1.5 cursor-ew-resize" />
+
+          <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'nw', e)} className="top-0 left-0 w-2 h-2 md:w-3 md:h-3 cursor-nwse-resize rounded-tl-xl" />
+          <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'ne', e)} className="top-0 right-0 w-2 h-2 md:w-3 md:h-3 cursor-nesw-resize rounded-tr-xl" />
+          <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'sw', e)} className="bottom-0 left-0 w-2 h-2 md:w-3 md:h-3 cursor-nesw-resize rounded-bl-xl" />
+          <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'se', e)} className="bottom-0 right-0 w-2 h-2 md:w-3 md:h-3 cursor-nwse-resize rounded-br-xl" />
+        </>
+      )}
+    </div>
+  );
+
   return (
-    <div className="h-screen w-full bg-[#020202] text-zinc-500 font-mono p-2 md:p-4 flex flex-col select-none overflow-hidden">
+    <div className="min-h-[100svh] md:h-screen w-full bg-[#020202] text-zinc-500 font-mono p-3 md:p-4 flex flex-col select-none overflow-hidden">
       
       {/* EXECUTIVE HEADER */}
-      <div className="flex justify-between items-center mb-3 md:mb-6 border-b border-zinc-900 pb-2 md:pb-4 px-1 md:px-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 md:gap-4 mb-3 md:mb-6 border-b border-zinc-900 pb-3 md:pb-4 px-1 md:px-2">
         <div className="flex items-center gap-2 md:gap-4">
           <div className="w-6 h-6 md:w-8 md:h-8 border border-amber-500/30 bg-amber-500/10 flex items-center justify-center rounded">
             <DollarSign size={16} className="text-amber-500" />
@@ -187,16 +230,20 @@ export default function ExecutiveDashboard() {
             <span className="text-amber-500/70 text-[8px] md:text-[9px] uppercase tracking-widest">Financial Overview Q3</span>
           </div>
         </div>
-        <div className="flex gap-3 md:gap-6 text-[8px] md:text-[10px] uppercase tracking-wider text-zinc-600">
+        <div className="flex w-full sm:w-auto justify-between sm:justify-start gap-3 md:gap-6 text-[8px] md:text-[10px] uppercase tracking-wider text-zinc-600">
             <span>Market: <span className="text-emerald-500">BULLISH</span></span>
             <span>Grid: 6x6 LOCKED</span>
         </div>
       </div>
 
+      <div className="md:hidden flex-1 min-h-0 grid grid-cols-2 auto-rows-fr gap-2">
+        {widgets.map((w) => renderWidgetPanel(w))}
+      </div>
+
       {/* MAIN CONTAINER */}
       <div 
         ref={containerRef}
-        className="flex-grow grid grid-cols-6 grid-rows-6 gap-2 md:gap-3 relative"
+        className="hidden md:grid flex-grow grid-cols-6 grid-rows-6 gap-3 relative"
         style={{ gridTemplateColumns: 'repeat(6, 1fr)', gridTemplateRows: 'repeat(6, 1fr)' }}
       >
         {/* BACKGROUND DOTS (Gold tinted) */}
@@ -207,50 +254,14 @@ export default function ExecutiveDashboard() {
         </div>
 
         {/* WIDGETS */}
-        {widgets.map((w) => (
-          <div
-            key={w.id}
-            onMouseDown={(e) => startDragging(w.id, e)}
-            style={{ 
-              gridColumn: `${w.x} / span ${w.w}`,
-              gridRow: `${w.y} / span ${w.h}`,
-            }}
-            className="group relative bg-[#080808] border border-zinc-800 rounded-lg md:rounded-xl p-3 md:p-5 flex flex-col cursor-grab active:cursor-grabbing hover:border-amber-500/40 transition-all shadow-2xl"
-          >
-            {/* WIDGET HEADER */}
-            <div className="flex justify-between items-start mb-2 md:mb-4 text-[8px] md:text-[10px] font-bold tracking-widest text-zinc-600">
-              <div className="flex items-center gap-1 md:gap-2 group-hover:text-amber-500 transition-colors">
-                {w.icon}
-                <span>{w.title}</span>
-              </div>
-              <span className="opacity-30">[{w.w}x{w.h}]</span>
-            </div>
-
-            {/* WIDGET CONTENT */}
-            <div className="flex-grow">
-               {renderWidgetContent(w)}
-            </div>
-
-            {/* --- 8 РУЧЕК РЕСАЙЗА (Золотые) --- */}
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'n', e)} className="top-0 left-1/4 right-1/4 h-1 md:h-1.5 cursor-ns-resize" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 's', e)} className="bottom-0 left-1/4 right-1/4 h-1 md:h-1.5 cursor-ns-resize" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'e', e)} className="right-0 top-1/4 bottom-1/4 w-1 md:w-1.5 cursor-ew-resize" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'w', e)} className="left-0 top-1/4 bottom-1/4 w-1 md:w-1.5 cursor-ew-resize" />
-
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'nw', e)} className="top-0 left-0 w-2 h-2 md:w-3 md:h-3 cursor-nwse-resize rounded-tl-xl" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'ne', e)} className="top-0 right-0 w-2 h-2 md:w-3 md:h-3 cursor-nesw-resize rounded-tr-xl" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'sw', e)} className="bottom-0 left-0 w-2 h-2 md:w-3 md:h-3 cursor-nesw-resize rounded-bl-xl" />
-            <ResizeHandle onMouseDown={(e) => startResizing(w.id, 'se', e)} className="bottom-0 right-0 w-2 h-2 md:w-3 md:h-3 cursor-nwse-resize rounded-br-xl" />
-
-          </div>
-        ))}
+        {widgets.map((w) => renderWidgetPanel(w, true))}
       </div>
     </div>
   );
 }
 
 // Золотые ручки ресайза
-function ResizeHandle({ onMouseDown, className }: { onMouseDown: (e: any) => void, className: string }) {
+function ResizeHandle({ onMouseDown, className }: { onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => void, className: string }) {
     return (
         <div 
             onMouseDown={onMouseDown}

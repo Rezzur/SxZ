@@ -1,6 +1,21 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+const bootSequence = [
+  "> MB_BIOS v4.0.26 INITIALIZED",
+  "> CHECKING MEMORY... 64GB DDR5 OK",
+  "> MOUNTING /dev/sda1/projects...",
+  "> LOADING CORE_MODULES...",
+  "> ESTABLISHING SECURE CONNECTION...",
+  "> ACCESS GRANTED.",
+];
+
+const commands = [
+  "git checkout production",
+  "docker-compose up -d --build",
+  "npm run optimize",
+];
 
 export default function TerminalBiome() {
   // --- Состояния Терминала ---
@@ -14,21 +29,6 @@ export default function TerminalBiome() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const constraintsRef = useRef<HTMLDivElement>(null);
-
-  const bootSequence = [
-    "> MB_BIOS v4.0.26 INITIALIZED",
-    "> CHECKING MEMORY... 64GB DDR5 OK",
-    "> MOUNTING /dev/sda1/projects...",
-    "> LOADING CORE_MODULES...",
-    "> ESTABLISHING SECURE CONNECTION...",
-    "> ACCESS GRANTED.",
-  ];
-
-  const commands = [
-    "git checkout production",
-    "docker-compose up -d --build",
-    "npm run optimize",
-  ];
 
   // Скролл
   const scrollToBottom = () => {
@@ -44,6 +44,21 @@ export default function TerminalBiome() {
     scrollToBottom();
   }, [lines]);
 
+  const startBoot = useCallback(async () => {
+    setStage("booting");
+    for (const line of bootSequence) {
+      await new Promise(r => setTimeout(r, 400));
+      setLines(prev => [...prev, line]);
+    }
+    setStage("processing");
+    for (const cmd of commands) {
+      await new Promise(r => setTimeout(r, 300));
+      setLines(prev => [...prev, `[EXECUTING]: ${cmd}`]);
+    }
+    await new Promise(r => setTimeout(r, 600));
+    setStage("active");
+  }, []);
+
   // Запуск загрузки
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -52,26 +67,11 @@ export default function TerminalBiome() {
           startBoot();
         }
       },
-      { threshold: 0.6 }
+      { threshold: 0.35 }
     );
     if (terminalRef.current) observer.observe(terminalRef.current);
     return () => observer.disconnect();
-  }, [stage]);
-
-  const startBoot = async () => {
-    setStage("booting");
-    for (let line of bootSequence) {
-      await new Promise(r => setTimeout(r, 400));
-      setLines(prev => [...prev, line]);
-    }
-    setStage("processing");
-    for (let cmd of commands) {
-      await new Promise(r => setTimeout(r, 300));
-      setLines(prev => [...prev, `[EXECUTING]: ${cmd}`]);
-    }
-    await new Promise(r => setTimeout(r, 600));
-    setStage("active");
-  };
+  }, [stage, startBoot]);
 
   const handleCommand = async (type: string) => {
     let newLines: string[] = [];
@@ -104,7 +104,7 @@ export default function TerminalBiome() {
       ];
     }
 
-    for (let line of newLines) {
+    for (const line of newLines) {
       await new Promise(r => setTimeout(r, 100));
       setLines(prev => [...prev, line]);
     }
@@ -123,13 +123,13 @@ export default function TerminalBiome() {
 return (
     <div 
       ref={constraintsRef}
-      className="h-full w-full bg-[#050505] text-[#4af626] font-mono p-2 md:p-4 flex items-center justify-center overflow-hidden relative"
+      className="min-h-[100svh] md:h-full w-full bg-[#050505] text-[#4af626] font-mono px-3 pt-14 pb-24 md:p-4 flex items-start md:items-center justify-center overflow-hidden relative"
     >
       {/* ФОНОВЫЙ ЭФФЕКТ */}
       <div className="absolute inset-0 pointer-events-none opacity-5 z-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
 
       {/* ПАНЕЛЬ ЗАДАЧ (TRAY) */}
-      <div className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 z-50 flex gap-2 md:gap-4 bg-zinc-900/80 p-1.5 md:p-2 rounded-xl md:rounded-2xl border border-white/10 backdrop-blur-xl shadow-2xl">
+      <div className="absolute bottom-3 md:bottom-8 left-1/2 -translate-x-1/2 z-50 flex gap-2 md:gap-4 bg-zinc-900/80 p-1.5 md:p-2 rounded-xl md:rounded-2xl border border-white/10 backdrop-blur-xl shadow-2xl">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -159,7 +159,7 @@ return (
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 100 }}
             transition={{ type: "spring", damping: 20, stiffness: 150 }}
-            className="flex flex-col w-full max-w-lg md:max-w-4xl bg-black/95 border border-[#4af626]/20 shadow-[0_40px_100px_rgba(0,0,0,1)] z-10 overflow-hidden rounded-lg md:rounded-xl"
+            className="flex flex-col w-full max-w-[calc(100vw-1.5rem)] md:max-w-4xl max-h-[calc(100svh-8rem)] bg-black/95 border border-[#4af626]/20 shadow-[0_40px_100px_rgba(0,0,0,1)] z-10 overflow-hidden rounded-lg md:rounded-xl"
           >
             {/* ШАПКА ОКНА (Drag Handle) */}
             <div className="drag-handle flex justify-between items-center border-b border-[#4af626]/10 p-2 md:p-4 bg-zinc-900/60 cursor-grab active:cursor-grabbing">
@@ -181,7 +181,7 @@ return (
             {/* ЗОНА ТЕКСТА */}
             <div 
               ref={scrollRef}
-              className="h-[250px] md:h-[400px] overflow-y-auto p-3 md:p-6 space-y-1 custom-terminal-scroll"
+              className="h-[44svh] max-h-[330px] md:h-[400px] md:max-h-none overflow-y-auto p-3 md:p-6 space-y-1 custom-terminal-scroll"
               style={{ scrollbarWidth: 'none' }}
               onPointerDown={(e) => e.stopPropagation()}
             >
